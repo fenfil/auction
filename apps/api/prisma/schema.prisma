@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  guest
+  user
+  mod
+  admin
+}
+
+enum LotStatus {
+  OPEN
+  CLOSED
+}
+
+model User {
+  id           String @id
+  name         String @unique
+  role         Role   @default(user)
+  passwordHash String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  bids      Bid[]
+}
+
+model Lot {
+  id            Int       @id @default(autoincrement())
+  title         String
+  startingPrice Float
+  currentPrice  Float
+  status        LotStatus @default(OPEN)
+  startTime     DateTime  @default(now())
+  endTime       DateTime
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  bids       Bid[]
+  finalBid   Bid?  @relation("FinalBid", fields: [finalBidId], references: [id])
+  finalBidId Int?  @unique
+
+  @@index([finalBidId])
+}
+
+model Bid {
+  id     Int    @id @default(autoincrement())
+  lotId  Int
+  userId String
+  amount Float
+
+  createdAt DateTime @default(now())
+
+  lot      Lot  @relation(fields: [lotId], references: [id])
+  finalFor Lot? @relation("FinalBid")
+  user     User @relation(fields: [userId], references: [id])
+
+  @@index([lotId])
+  @@index([userId])
+}
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String   @db.Text
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
