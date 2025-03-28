@@ -19,6 +19,12 @@
     "lint": {
       "dependsOn": ["^lint"]
     },
+    "start": {
+      "dependsOn": ["migrate", "^start"]
+    },
+    "migrate": {
+      "dependsOn": ["^migrate"]
+    },
     "dev": {
       "dependsOn": ["generate", "deploy"],
       "cache": false,
