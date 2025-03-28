@@ -64,21 +64,12 @@ npm run seed
 npx turbo test
 ```
 
-### Production Mode
+### Run in docker
 
-To build and run in production mode:
+In case you want to run the application in docker, you can use the following command:
 
 ```bash
-# Build all packages and apps
-npm run build
-
-# Run backend
-cd apps/api
-npm run start
-
-# Run frontend
-cd apps/front
-npm run start
+docker compose up
 ```
 
 ## Postman Collection
